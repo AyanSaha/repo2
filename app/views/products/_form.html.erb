@@ -33,3 +33,12 @@
     <%= f.submit %>
   </div>
 <% end %>
+<div class="row">
+<h3>Now upload excel of all product details</h3>
+<h2>Import Products</h2>
+
+<%= form_tag import_products_path, multipart: true do %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Import" %>
+<% end %>
+</div>

@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-	before_action :authenticate_user!, only: [:create,:edit,:update,:destroy]
+	before_action :authenticate_user!, only: [:create,:edit,:update,:destroy,:index]
 	def new
 		@product=Product.new
 	end 
@@ -39,6 +39,18 @@ class ProductsController < ApplicationController
       end
     end
 	end
+  def import
+    #Call is made to import method of the Product model sending file format
+    @imported=Product.import(params[:file])
+    msg=@imported[1]
+    if @imported.include?true
+    redirect_to root_url,notice: msg
+     else
+       redirect_to root_url,alert: msg
+    
+
+    end
+  end
 
 	def destroy
         @product=Product.find(params[:id])
