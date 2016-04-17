@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   
+  get 'news/index'
+
   resources :products do
    collection { post :import }
  end
@@ -8,7 +10,8 @@ Rails.application.routes.draw do
 devise_for :users
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
-   root 'products#index'
+   #root 'products#index'
+   root 'news#index'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
