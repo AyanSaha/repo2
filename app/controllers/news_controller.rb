@@ -1,15 +1,17 @@
+
 require 'open-uri'
 require 'mechanize'
 
 require 'nokogiri'
 
 class NewsController < ApplicationController
+	#respond_to :json
   def index
   	agent=Mechanize.new
   	page=agent.get('https://news.google.com') 
 
   	google_form=page.forms.first
-  	google_form.q='kkr'
+  	google_form.q='FAN'
   	page=agent.submit(google_form)
   	#binding.pry  	
   	#page=agent.page.link_with(:text => 'c').click
@@ -54,6 +56,9 @@ class NewsController < ApplicationController
 		  #  => Nokogiri::XML::NodeSet 
 		  # > summary_node.size
 		  #  => 1 
+		  #Converting to UTF-8 code 
+		  a=summary_node.text.force_encoding('ASCII-8BIT').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?')
+     binding.pry
            
       # Create an "---------" line for the title
       separator = "-" * prime_title.text.size
@@ -65,12 +70,11 @@ class NewsController < ApplicationController
   	  #html += "%s\n%s\n%s\n%s\n\n\n\n" % [prime_title.text, separator, summary_node.text,read_more]
   	      news_hash[prime_title.text]="#{summary_node.text}"
   	      news_link.push(read_more)
-  	      @news=News.new(headline: prime_title.text,summary: summary_node.text,link: news_url)
+  	      @news=News.new(headline: prime_title.text,summary: a,link: news_url)
   	       @news.save
 		end
-          @news_today=News.latest_news
-          
-
-		#render :text => html,:content_type => "text/plain"
+		@news_today=Hash.new
+          @news_today=@news.latest_news
+		render :json => @news_today
   end
 end

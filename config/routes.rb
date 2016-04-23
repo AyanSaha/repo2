@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-  get 'news/index'
+  #get 'news/index'
 
   resources :products do
    collection { post :import }
@@ -19,7 +19,7 @@ devise_for :users
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
   # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
+     resources :news, defaults: {format:'json'}
 
   # Example resource route with options:
   #   resources :products do

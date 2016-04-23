@@ -9,7 +9,9 @@ class News < ActiveRecord::Base
 
 
 
-	def self.latest_news
-		@news=News.where(created_at: (Time.now.midnight - 1.day)..Time.now.midnight)
+	def latest_news
+		#@latest=News.where(created_at: (Time.now.midnight - 1.day)..Time.now.midnight)
+		@latest=News.find_by_sql("select id,headline,summary,link from news order by updated_at desc")
+        return @latest
     end
 end
