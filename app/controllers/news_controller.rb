@@ -58,8 +58,7 @@ class NewsController < ApplicationController
 		  #  => 1 
 		  #Converting to UTF-8 code 
 		  a=summary_node.text.force_encoding('ASCII-8BIT').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?')
-     binding.pry
-           
+      
       # Create an "---------" line for the title
       separator = "-" * prime_title.text.size
 

@@ -41,17 +41,19 @@ class ProductsController < ApplicationController
 	end
   def import
     #Call is made to import method of the Product model sending file format
-    @imported=Product.import(params[:file])
-    msg=@imported[1]
-    if @imported.include?true
-    redirect_to root_url,notice: msg
-     else
-       redirect_to root_url,alert: msg
-    
-
-    end
+    #check for file type,if  other than csv or excel dont allow
+    if validate_format(params[:file])
+       @imported=Product.import(params[:file])
+       msg=@imported[1]
+       if @imported.include?true
+         redirect_to root_url,notice: msg
+        else
+          redirect_to root_url,alert: msg
+       end
+    else 
+       redirect_to root_url,alert:"Wrong file type!Please upload in .csv ,.xls and .xlxs"
   end
-
+end
 	def destroy
         @product=Product.find(params[:id])
          @product.destroy
@@ -73,4 +75,10 @@ private
             #binding.pry
 	          end
     end
+      def validate_format(file_ext)
+        format_file=file_ext.original_filename.split(".").to_set
+        allowed_type=%w[csv xls xlxs].to_set
+        val=format_file.intersect?allowed_type
+        return val
+      end
 end
