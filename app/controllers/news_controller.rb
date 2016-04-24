@@ -1,9 +1,8 @@
 
 require 'open-uri'
 require 'mechanize'
-
 require 'nokogiri'
-
+require 'will_paginate/array'
 class NewsController < ApplicationController
 	#respond_to :json
   def index
@@ -57,7 +56,7 @@ class NewsController < ApplicationController
 		  # > summary_node.size
 		  #  => 1 
 		  #Converting to UTF-8 code 
-		  a=summary_node.text.force_encoding('ASCII-8BIT').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?')
+		  #a=summary_node.text.force_encoding('ASCII-8BIT').encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?')
       
       # Create an "---------" line for the title
       separator = "-" * prime_title.text.size
@@ -67,13 +66,16 @@ class NewsController < ApplicationController
 		  # notice how we can also do it on the NodeSet, 
 		  # there it as a different semantic by invoking #text in all the children nodes
   	  #html += "%s\n%s\n%s\n%s\n\n\n\n" % [prime_title.text, separator, summary_node.text,read_more]
+        
   	      news_hash[prime_title.text]="#{summary_node.text}"
-  	      news_link.push(read_more)
-  	      @news=News.new(headline: prime_title.text,summary: a,link: news_url)
+  	      news_link.push(news_url)
+  	      
+  	      @news=News.new(headline: prime_title.text,summary: summary_node.text,link: news_url)
   	       @news.save
 		end
-		@news_today=Hash.new
-          @news_today=@news.latest_news
-		render :json => @news_today
+		 
+          @news_today=@news.find_latest
+            @news_pag=@news_today.paginate(:page =>params[:page],:per_page=>10)
+		   #render :json=>news_hash
   end
 end

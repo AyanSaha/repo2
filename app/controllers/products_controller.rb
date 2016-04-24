@@ -76,6 +76,7 @@ private
 	          end
     end
       def validate_format(file_ext)
+        #File format validation 
         format_file=file_ext.original_filename.split(".").to_set
         allowed_type=%w[csv xls xlxs].to_set
         val=format_file.intersect?allowed_type
