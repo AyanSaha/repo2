@@ -18,6 +18,7 @@ class ProductsController < ApplicationController
 	end
 	def index
       @products=Product.all
+      Product.calculate_priority
 	end
 	def show
 		@product=Product.find(params[:id])
@@ -47,13 +48,39 @@ class ProductsController < ApplicationController
        msg=@imported[1]
        if @imported.include?true
          redirect_to root_url,notice: msg
+
         else
           redirect_to root_url,alert: msg
        end
     else 
        redirect_to root_url,alert:"Wrong file type!Please upload in .csv ,.xls and .xlxs"
   end
+
 end
+ def product_format_download
+      csv_string = CSV.generate do |csv|
+         csv << ["name", "description","price"]
+      end
+   send_data csv_string,
+   :type => 'text/csv; charset=iso-8859-1; header=present',
+   :disposition => "attachment; filename=products.csv" 
+
+ end
+ def export_products
+  @products = Product.all
+    csv_string = CSV.generate do |csv|
+         csv << ["Name", "Description", "Price","Priority"]
+         @products.each do |product|
+           csv << [product.name,product.description, product.price, product.priority]
+         end
+    end         
+  
+   send_data csv_string,
+   :type => 'text/csv; charset=iso-8859-1; header=present',
+   :disposition => "attachment; filename=products_list.csv" 
+
+ end
+
 	def destroy
         @product=Product.find(params[:id])
          @product.destroy

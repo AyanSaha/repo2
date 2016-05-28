@@ -10,15 +10,16 @@ class Product < ActiveRecord::Base
             :presence => {:message => "Enter description of the product"},:length => {minimum: 5 ,:message => "Desciption should be 5 characters long"}
   validates :price , 
             :presence => {:message =>"Price can't be blank!"}  
-  validates :image,
-            :presence=>true 
+  #validates :image,
+            #:presence=>true 
 begin
 def self.import(file)
   message="Products imported!!"
   spreadsheet = open_spreadsheet(file)
    
   header = spreadsheet.row(1)
-  if header !=3
+  binding.pry
+  if header.count !=3
      message="Columns must be 3!!Wrong format sheet uploaded!!"
     return false,message
   end
@@ -40,5 +41,15 @@ def self.open_spreadsheet(file)
 end
 rescue
    
+  end
+  def self.calculate_priority
+    products=Product.all
+     products.each do |product|
+         id=product.id
+         priority=id%2
+         product.priority=priority
+         product.save
+
+      end
   end
 end

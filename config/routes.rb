@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   
   get '/news' =>'news#index'
-
+  get '/download'=>'products#product_format_download'
+  get '/export'=>'products#export_products'
   resources :products do
    collection { post :import }
  end
